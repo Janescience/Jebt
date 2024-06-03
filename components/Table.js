@@ -1,25 +1,26 @@
 const Table = ({ headers, data, actions }) => (
-    <table className="w-full mt-2 border-collapse border border-gray-200">
+  <div class="overflow-x-auto">
+      <table className="mt-2 border-collapse border border-gray-200 w-full">
       <thead>
         <tr>
           {headers.map((header) => (
-            <th key={header} className="border border-gray-200 p-2">
+            <th key={header} >
               {header}
             </th>
           ))}
-          {actions && <th className="border border-gray-200 p-2">Actions</th>}
+          {actions && <th >Actions</th>}
         </tr>
       </thead>
       <tbody>
         {data.map((row, rowIndex) => (
           <tr key={rowIndex}>
             {headers.map((header, colIndex) => (
-              <td key={colIndex} className="border border-gray-200 p-2">
+              <td key={colIndex} >
                 {row[header]}
               </td>
             ))}
             {actions && (
-              <td className="border border-gray-200 p-2">
+              <td className="p-1">
                 {actions.map(({ label, onClick, className }, actionIndex) => (
                   <button key={actionIndex} onClick={() => onClick(row)} className={className}>
                     {label}
@@ -31,6 +32,8 @@ const Table = ({ headers, data, actions }) => (
         ))}
       </tbody>
     </table>
+  </div>
+    
   );
   
   export default Table;

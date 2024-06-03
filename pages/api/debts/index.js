@@ -34,12 +34,12 @@ export default async function handler(req, res) {
       break;
     case 'POST':
       try {
-        const { name, type, creditCard, detail, amount,paid, flag, monthStart, allPeriod, balance, interest, transactionDate } = req.body;
+        const { name, type, creditCard, detail, amount,paid, flag, monthStart,yearStart, allPeriod, balance, interest, transactionDate } = req.body;
         const paidPerMonth = amount / allPeriod;
         const debts = [];
 
         for (let i = 0; i < allPeriod; i++) {
-            const currentDate = new Date(transactionDate)//start from transaction date
+            const currentDate = new Date(yearStart,monthStart-1,1)//start from transaction date
             currentDate.setMonth(i+(monthStart - 1));
 
             debts.push({

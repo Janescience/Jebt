@@ -4,24 +4,25 @@ const DebtDetailsTable = ({ debts, onEdit, onDelete }) => {
   const headers = [
     'Name',
     'Type',
-    'Detail',
+    // 'Detail',
     'Amount',
     'Period',
     'Paid',
-    'Balance',
+    // 'Balance',
     'Interest',
     'TransactionDate',
   ];
 
   const data = debts.map((debt) => ({
+    Id : debt._id,
     Name: debt.name,
-    Type: debt.type,
-    Detail: debt.detail,
-    Amount: `$${debt.amount.toFixed(2)}`,
+    Type: debt.type == 'credit card' ? 'CC' : '',
+    // Detail: debt.detail,
+    Amount: debt.amount,
     Period: `${debt.currentPeriod}/${debt.allPeriod}`,
-    Paid: `$${debt.paid.toFixed(2)}`,
-    Balance: `$${debt.balance.toFixed(2)}`,
-    Interest: `${debt.interest}%`,
+    Paid: debt.paid.toFixed(2),
+    // Balance: `$${debt.balance.toFixed(2)}`,
+    Interest: debt.interest,
     TransactionDate: debt.transactionDate.split('T')[0],
   }));
 

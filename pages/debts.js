@@ -14,17 +14,18 @@ const Debts = () => {
   const [showForm, setShowForm] = useState(false);
   const [creditCards, setCreditCards] = useState([]);
   const [formValues, setFormValues] = useState({
-    name: '',
+    name: 'Advance',
     type: 'credit card',
     creditCard: '',
     detail: '',
-    amount: '',
+    amount: 10000,
     flag: 'installment',
-    monthStart: '',
-    allPeriod: '',
+    monthStart: 5,
+    yearStart:new Date().getFullYear(),
+    allPeriod: 10,
     paid: '',
     balance: '',
-    interest: '',
+    interest: 0.74,
     transactionDate: '',
   });
 
@@ -43,16 +44,6 @@ const Debts = () => {
 
 
   useEffect(() => {
-    const fetchSums = async () => {
-      const res = await fetch('/api/debts');
-      const data = await res.json();
-      setSums(data.data);
-    };
-
-    fetchSums();
-  }, []);
-
-  useEffect(() => {
     if (formValues.type === 'credit card') {
       const fetchCreditCards = async () => {
         const res = await fetch('/api/credit-cards/all');
@@ -68,6 +59,7 @@ const Debts = () => {
     const res = await fetch(`/api/debts/monthly/${year}/${month}`);
     const data = await res.json();
     setDebtDetails(data.data);
+    fetchSums(selectedYear);
   };
 
   const handleMonthClick = (year, month) => {
@@ -143,17 +135,18 @@ const Debts = () => {
     }
     setEditingDebt(null);
     setFormValues({
-      name: '',
+      name: 'Advance',
       type: 'credit card',
       creditCard: '',
       detail: '',
-      amount: '',
+      amount: 10000,
       flag: 'installment',
-      monthStart: '',
-      allPeriod: '',
+      monthStart: 5,
+      yearStart:new Date().getFullYear(),
+      allPeriod: 10,
       paid: '',
       balance: '',
-      interest: '',
+      interest: 0.74,
       transactionDate: '',
     });
     setShowForm(false);
@@ -189,8 +182,9 @@ const Debts = () => {
     }
   };
 
-  const deleteDebt = async (id) => {
-    const res = await fetch(`/api/debts/${id}`, {
+  const deleteDebt = async (debt) => {
+    console.log('deleteDebt : ',debt)
+    const res = await fetch(`/api/debts/${debt.Id}`, {
       method: 'DELETE',
     });
     if (res.ok) {
@@ -213,7 +207,8 @@ const Debts = () => {
       detail: debt.detail,
       amount: debt.amount,
       flag: debt.flag,
-      monthStart: new Date(debt.transactionDate).getMonth(),
+      monthStart: debt.month,
+      yearStart: debt.year,
       allPeriod: debt.allPeriod,
       paid: debt.paid,
       balance: debt.balance,
@@ -233,6 +228,7 @@ const Debts = () => {
       amount: '',
       flag: 'installment',
       monthStart: '',
+      yearStart:new Date().getFullYear(),
       allPeriod: '',
       paid: '',
       balance: '',
@@ -388,6 +384,17 @@ const Debts = () => {
                   required
                 />
                 <Input
+                  label="Year Start"
+                  type="select"
+                  name="yearStart"
+                  value={formValues.yearStart}
+                  onChange={handleInputChange}
+                  required
+                  options={[
+                    ...getYearsOptions().map((year) => ({value:year,label:year}))                   
+                  ]} 
+                />
+                <Input
                   label="Period"
                   type="number"
                   name="allPeriod"
@@ -463,7 +470,7 @@ const Debts = () => {
                   <DebtDetailsTable 
                     debts={groupedDebts[groupKey]}
                     onEdit={handleEditClick}
-                    onDelete={(debt) => deleteDebt(debt._id)}
+                    onDelete={deleteDebt}
                   />
                 )}
               </div>
