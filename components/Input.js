@@ -1,4 +1,4 @@
-const FormInput = ({ label, type, name, value, onChange, required = false, readOnly = false, options }) => (
+const Input = ({ label, type, name, value, onChange, required = false, readOnly = false, options }) => (
     <div>
       <label className="block text-gray-700 mb-2">{label}</label>
       {type === 'select' ? (
@@ -23,5 +23,5 @@ const FormInput = ({ label, type, name, value, onChange, required = false, readO
     </div>
   );
   
-  export default FormInput;
+  export default Input;
   

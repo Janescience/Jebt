@@ -1,6 +1,11 @@
 import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 
+import Card from '@/components/Card';
+import Button from '@/components/Button';
+import Input from '@/components/Input';
+import DebtDetailsTable from '@/components/DebtDetailsTable';
+
 const Debts = () => {
   const [sums, setSums] = useState({});
   const [selectedMonth, setSelectedMonth] = useState(null);
@@ -239,6 +244,8 @@ const Debts = () => {
 
   const handleYearChange = (e) => {
     setSelectedYear(e.target.value);
+    setShowForm(false)
+    setSelectedMonth(false)
   };
 
   const getYearsOptions = () => {
@@ -274,177 +281,156 @@ const Debts = () => {
   const groupedDebts = groupDebts();
 
   return (
-    <div className="bg-white p-5 rounded shadow w-full h-full">
-      <h2 className="text-2xl font-bold mb-4">Debts Summary (Last Year)</h2>
+    <Card title="Debts">
       <div className="mb-4 flex justify-between">
-        <button onClick={handleAddClick} className="bg-black text-white px-4 py-2 rounded shadow">
-          Add Debt
-        </button>
-        <select value={selectedYear} onChange={handleYearChange} className="border p-2 rounded">
-          {getYearsOptions().map((year) => (
-            <option key={year} value={year}>
-              {year}
-            </option>
-          ))}
-        </select>
+        <Button onClick={handleAddClick}>Create Debt</Button>
+        <Input 
+          label="" 
+          type="select" 
+          name="year" 
+          value={selectedYear} 
+          onChange={handleYearChange} 
+          options={getYearsOptions().map((year)=> ({ value: year, label: year }))} 
+        />
       </div>
       {showForm && (
         <form onSubmit={handleFormSubmit} className="mb-4 bg-gray-100 p-5 rounded shadow">
-          <h3 className="text-xl font-bold mb-4">{editingDebt ? 'Edit Debt' : 'Add Debt'}</h3>
+          <h3 className="text-xl font-bold mb-4">{editingDebt ? 'Edit Debt Details' : 'Input Debt Details'}</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-gray-700 mb-2">Name</label>
-              <input
-                type="text"
-                name="name"
-                value={formValues.name}
-                onChange={handleInputChange}
-                className="w-full p-2 border rounded"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-gray-700 mb-2">Type</label>
-              <select
-                name="type"
-                value={formValues.type}
-                onChange={handleInputChange}
-                className="w-full p-2 border rounded"
-                required
-              >
-                <option value="credit card">Credit Card</option>
-                <option value="regular">Regular</option>
-                <option value="cash">Cash</option>
-              </select>
-            </div>
+            <Input
+              label="Name"
+              type="text"
+              name="name"
+              value={formValues.name}
+              onChange={handleInputChange}
+              required
+            />
+            <Input
+              label="Type"
+              type="select"
+              name="type"
+              value={formValues.type}
+              onChange={handleInputChange}
+              required
+              options={[
+                {
+                  value:'credit card',
+                  label:'Credit Card'
+                },                   
+                {
+                  value:'regular',
+                  label:'Regular' 
+                },                 
+                {
+                  value:'cash',
+                  label:'Cash' 
+                }, ]} 
+            />
             {formValues.type === 'credit card' && (
-              <div>
-                <label className="block text-gray-700 mb-2">Credit Card</label>
-                <select
-                  name="creditCard"
-                  value={formValues.creditCard}
-                  onChange={handleInputChange}
-                  className="w-full p-2 border rounded"
-                >
-                  <option value="">Select Credit Card</option>
-                  {creditCards.map((card) => (
-                    <option key={card._id} value={card._id}>
-                      {card.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
+              <Input
+                label="Credit Card"
+                type="select"
+                name="creditCard"
+                value={formValues.creditCard}
+                onChange={handleInputChange}
+                required
+                options={[
+                  {
+                    value:'',
+                    label:'Select Credit Card'
+                  },                   
+                  ...creditCards.map((card) => ({value:card._id,label:card.name}))  
+                ]} 
+              />
             )}
-            <div>
-              <label className="block text-gray-700 mb-2">Detail</label>
-              <input
-                type="text"
-                name="detail"
-                value={formValues.detail}
-                onChange={handleInputChange}
-                className="w-full p-2 border rounded"
-              />
-            </div>
-            <div>
-              <label className="block text-gray-700 mb-2">Amount</label>
-              <input
-                type="number"
-                name="amount"
-                value={formValues.amount}
-                onChange={handleInputChange}
-                className="w-full p-2 border rounded"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-gray-700 mb-2">Flag</label>
-              <select
-                name="flag"
-                value={formValues.flag}
-                onChange={handleInputChange}
-                className="w-full p-2 border rounded"
-                required
-              >
-                <option value="installment">Installment</option>
-                <option value="paid full">Paid Full</option>
-              </select>
-            </div>
+            <Input
+              label="Detail"
+              type="text"
+              name="detail"
+              value={formValues.detail}
+              onChange={handleInputChange}
+              
+            />
+            <Input
+              label="Amount"
+              type="number"
+              name="amount"
+              value={formValues.amount}
+              onChange={handleInputChange}
+              required
+            />
+            <Input
+              label="Flag"
+              type="select"
+              name="flag"
+              value={formValues.flag}
+              onChange={handleInputChange}
+              required
+              options={[
+                {
+                  value:'installment',
+                  label:'Installment'
+                },                   
+                {
+                  value:'paid full',
+                  label:'Paid Full' 
+                },                 
+              ]} 
+            />
             {formValues.flag === 'installment' && (
               <>
-                <div>
-                  <label className="block text-gray-700 mb-2">Month Start</label>
-                  <input
-                    type="number"
-                    name="monthStart"
-                    value={formValues.monthStart}
-                    onChange={handleInputChange}
-                    className="w-full p-2 border rounded"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-gray-700 mb-2">Period</label>
-                  <input
-                    type="number"
-                    name="period"
-                    value={formValues.period}
-                    onChange={handleInputChange}
-                    className="w-full p-2 border rounded"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-gray-700 mb-2">Paid/Period</label>
-                  <input
-                    type="number"
-                    name="paid"
-                    value={formValues.paid}
-                    onChange={handleInputChange}
-                    className="w-full p-2 border rounded"
-                    required
-                    readOnly
-                  />
-                </div>
-                <div>
-                  <label className="block text-gray-700 mb-2">Balance</label>
-                  <input
-                    type="number"
-                    name="balance"
-                    value={formValues.balance}
-                    onChange={handleInputChange}
-                    className="w-full p-2 border rounded"
-                    required
-                    readOnly
-                  />
-                </div>
-                <div>
-                  <label className="block text-gray-700 mb-2">Interest</label>
-                  <input
-                    type="number"
-                    name="interest"
-                    value={formValues.interest}
-                    onChange={handleInputChange}
-                    className="w-full p-2 border rounded"
-                    required
-                  />
-                </div>
+                <Input
+                  label="Month Start"
+                  type="number"
+                  name="monthStart"
+                  value={formValues.monthStart}
+                  onChange={handleInputChange}
+                  required
+                />
+                <Input
+                  label="Period"
+                  type="number"
+                  name="allPeriod"
+                  value={formValues.allPeriod}
+                  onChange={handleInputChange}
+                  required
+                />
+                <Input
+                  label="Paid/Period"
+                  type="number"
+                  name="paid"
+                  value={formValues.paid}
+                  onChange={handleInputChange}
+                  required
+                />
+                <Input
+                  label="Balance"
+                  type="number"
+                  name="balance"
+                  value={formValues.balance}
+                  onChange={handleInputChange}
+                  required
+                />
+                <Input
+                  label="Interest"
+                  type="number"
+                  name="interest"
+                  value={formValues.interest}
+                  onChange={handleInputChange}
+                  required
+                />
               </>
             )}
-            <div>
-              <label className="block text-gray-700 mb-2">Transaction Date</label>
-              <input
+            <Input
+                label="Transaction Date"
                 type="date"
                 name="transactionDate"
                 value={formValues.transactionDate}
                 onChange={handleInputChange}
-                className="w-full p-2 border rounded"
                 required
               />
-            </div>
           </div>
-          <button type="submit" className="mt-4 bg-black text-white px-4 py-2 rounded shadow">
-            {editingDebt ? 'Update Debt' : 'Add Debt'}
-          </button>
+          <Button type="submit">{editingDebt ? 'Update':'Save'}</Button>
         </form>
       )}
       <ul>
@@ -467,89 +453,24 @@ const Debts = () => {
       {selectedMonth && (
         <div className="mt-4">
           <h3 className="text-xl font-bold mb-2">Details for {formatMonthYear(selectedMonth)}</h3>
-          <ul>
             {Object.keys(groupedDebts).map((groupKey) => (
-              <li key={groupKey} className="mb-2 p-2 border rounded shadow cursor-pointer" onClick={() => toggleGroup(groupKey)}>
+              <div key={groupKey} className="mb-2 p-2 border rounded shadow cursor-pointer" onClick={() => toggleGroup(groupKey)}>
                 <div className="flex justify-between">
                   <span>{groupKey}</span>
                   <span>${groupedDebts[groupKey].reduce((acc, debt) => acc + debt.paid, 0).toFixed(2)}</span>
                 </div>
                 {expandedGroups[groupKey] && (
-                  <ul className="mt-2">
-                    {groupedDebts[groupKey].map((debt) => (
-                      <li key={debt._id} className="mb-2 p-2 border rounded shadow">
-                        <div className="flex justify-between">
-                        <div>
-                            <p className="font-bold">{debt.name}</p>
-                            <p>Type: {debt.type}</p>
-                            {/* <p>Credit Card: {debt.creditCard ? debt.creditCard.name : 'N/A'}</p> */}
-                            <p>Detail: {debt.detail}</p>
-                            <p>Amount: ${debt.amount.toFixed(2)}</p>
-                            {/* <p>Flag: {debt.flag}</p>
-                            <p>Month: {debt.month+1}</p> */}
-                            {/* <p>Year: {debt.year}</p> */}
-                            <p>Period: {debt.currentPeriod}/{debt.allPeriod}</p>
-                            <p>Paid: ${debt.paid.toFixed(2)}</p>
-                            <p>Balance: ${debt.balance.toFixed(2)}</p>
-                            <p>Interest/Period: {debt.interest}%</p>
-                            <p>Transaction Date: {debt.transactionDate.split('T')[0]}</p>
-                        </div>
-                          <div className="flex space-x-2">
-                            <button onClick={() => handleEditClick(debt)} className="text-blue-500">
-                              Edit
-                            </button>
-                            <button onClick={() => deleteDebt(debt._id)} className="text-red-500">
-                              Delete
-                            </button>
-                          </div>
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
+                  <DebtDetailsTable 
+                    debts={groupedDebts[groupKey]}
+                    onEdit={handleEditClick}
+                    onDelete={(debt) => deleteDebt(debt._id)}
+                  />
                 )}
-              </li>
+              </div>
             ))}
-          </ul>
-          
         </div>
       )}
-      {/* {selectedMonth && (
-        <div className="mt-4">
-          <h3 className="text-xl font-bold mb-2">Details for {formatMonthYear(selectedMonth)}</h3>
-          <ul>
-            {debtDetails.map((debt) => (
-              <li key={debt._id} className="mb-2 p-2 border rounded shadow">
-                <div className="flex justify-between">
-                  <div>
-                    <p className="font-bold">{debt.name}</p>
-                    <p>Type: {debt.type}</p>
-                    <p>Credit Card: {debt.creditCard ? debt.creditCard.name : 'N/A'}</p>
-                    <p>Detail: {debt.detail}</p>
-                    <p>Amount: ${debt.amount.toFixed(2)}</p>
-                    <p>Flag: {debt.flag}</p>
-                    <p>Month: {debt.month+1}</p>
-                    <p>Year: {debt.year}</p>
-                    <p>Period: {debt.currentPeriod}/{debt.allPeriod}</p>
-                    <p>Paid: ${debt.paid.toFixed(2)}</p>
-                    <p>Balance: ${debt.balance.toFixed(2)}</p>
-                    <p>Interest/Period: {debt.interest}%</p>
-                    <p>Transaction Date: {debt.transactionDate.split('T')[0]}</p>
-                  </div>
-                  <div className="flex space-x-2">
-                    <button onClick={() => handleEditClick(debt)} className="text-blue-500">
-                      Edit
-                    </button>
-                    <button onClick={() => deleteDebt(debt._id)} className="text-red-500">
-                      Delete
-                    </button>
-                  </div>
-                </div>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )} */}
-    </div>
+    </Card>
   );
 };
 

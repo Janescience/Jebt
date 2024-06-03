@@ -18,7 +18,7 @@ const DebtDetailsTable = ({ debts, onEdit, onDelete }) => {
     Type: debt.type,
     Detail: debt.detail,
     Amount: `$${debt.amount.toFixed(2)}`,
-    Period: `$${debt.currentPeriod}/${debt.allPeriod}`,
+    Period: `${debt.currentPeriod}/${debt.allPeriod}`,
     Paid: `$${debt.paid.toFixed(2)}`,
     Balance: `$${debt.balance.toFixed(2)}`,
     Interest: `${debt.interest}%`,
