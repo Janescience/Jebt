@@ -11,6 +11,7 @@ const DebtDetailsTable = ({ debts, onEdit, onDelete }) => {
     // 'Balance',
     'Interest',
     'TransactionDate',
+    'User'
   ];
 
   const data = debts.map((debt) => ({
@@ -24,6 +25,7 @@ const DebtDetailsTable = ({ debts, onEdit, onDelete }) => {
     // Balance: `$${debt.balance.toFixed(2)}`,
     Interest: debt.interest,
     TransactionDate: debt.transactionDate.split('T')[0],
+    User : debt.user
   }));
 
   const actions = [

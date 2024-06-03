@@ -1,6 +1,6 @@
 const Table = ({ headers, data, actions }) => (
-  <div class="overflow-x-auto">
-      <table className="mt-2 border-collapse border border-gray-200 w-full">
+  <div class="overflow-x-auto ">
+      <table className="mt-2 border-collapse border border-slate-500 bg-white w-full">
       <thead>
         <tr>
           {headers.map((header) => (
@@ -13,9 +13,9 @@ const Table = ({ headers, data, actions }) => (
       </thead>
       <tbody>
         {data.map((row, rowIndex) => (
-          <tr key={rowIndex}>
+          <tr key={rowIndex} >
             {headers.map((header, colIndex) => (
-              <td key={colIndex} >
+              <td key={colIndex} className="p-1">
                 {row[header]}
               </td>
             ))}

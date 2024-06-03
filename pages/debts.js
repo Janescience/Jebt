@@ -7,6 +7,8 @@ import Input from '@/components/Input';
 import DebtDetailsTable from '@/components/DebtDetailsTable';
 
 const Debts = () => {
+  const currentYear = new Date().getFullYear();
+  const currentMonth = new Date().getMonth() + 1;
   const [sums, setSums] = useState({});
   const [selectedMonth, setSelectedMonth] = useState(null);
   const [debtDetails, setDebtDetails] = useState([]);
@@ -27,6 +29,7 @@ const Debts = () => {
     balance: '',
     interest: 0.74,
     transactionDate: '',
+    user : 'Jane'
   });
 
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
@@ -148,6 +151,7 @@ const Debts = () => {
       balance: '',
       interest: 0.74,
       transactionDate: '',
+      user : 'Jane'
     });
     setShowForm(false);
   };
@@ -214,6 +218,7 @@ const Debts = () => {
       balance: debt.balance,
       interest: debt.interest,
       transactionDate: debt.transactionDate.split('T')[0],
+      user : debt.user
     });
     setShowForm(true);
   };
@@ -234,6 +239,7 @@ const Debts = () => {
       balance: '',
       interest: '',
       transactionDate: '',
+      user : 'Jane'
     });
     setShowForm(true);
   };
@@ -262,17 +268,33 @@ const Debts = () => {
 
   const groupDebts = () => {
     const groups = {};
-
+  
     debtDetails.forEach((debt) => {
-      const groupKey = `${debt.creditCard ? debt.creditCard.name : 'No Credit Card'} - ${debt.flag}`;
-      if (!groups[groupKey]) {
-        groups[groupKey] = [];
+      const user = debt.user ? debt.user.name : 'No User';  // Assuming debt has a user field
+      const creditCard = debt.creditCard ? debt.creditCard.name : 'No Credit Card';
+      const flag = debt.flag;
+  
+      if (!groups[user]) {
+        groups[user] = { sum: 0, creditCards: {} };
       }
-      groups[groupKey].push(debt);
+      if (!groups[user].creditCards[creditCard]) {
+        groups[user].creditCards[creditCard] = { sum: 0, flags: {} };
+      }
+      if (!groups[user].creditCards[creditCard].flags[flag]) {
+        groups[user].creditCards[creditCard].flags[flag] = { sum: 0, debts: [] };
+      }
+  
+      groups[user].sum += debt.paid;
+      groups[user].creditCards[creditCard].sum += debt.paid;
+      groups[user].creditCards[creditCard].flags[flag].sum += debt.paid;
+      groups[user].creditCards[creditCard].flags[flag].debts.push(debt);
     });
 
+    console.log('groupDebts : ',groups)
+  
     return groups;
   };
+  
 
   const groupedDebts = groupDebts();
 
@@ -440,7 +462,73 @@ const Debts = () => {
           <Button type="submit">{editingDebt ? 'Update':'Save'}</Button>
         </form>
       )}
-      <ul>
+      <div>
+        <ul>
+        {Object.keys(sums).map((key) => {
+          const [year, month] = key.split('-');
+          const isSelected = selectedMonth === `${year}-${month}`;
+          const isCurrentMonth = currentYear === parseInt(year) && currentMonth === parseInt(month);
+          return (
+            <div key={key}>
+              <li
+                className={`mb-2 p-2 text-lg border rounded shadow cursor-pointer ${isCurrentMonth ? 'bg-green-200 font-bold	' : ''}`}
+                onClick={() => handleMonthClick(year, month)}
+              >
+                <div className="flex justify-between">
+                  <span>{formatMonthYear(key)}</span>
+                  <span>{sums[key].toFixed(2)}</span>
+                </div>
+              </li>
+              {selectedMonth === `${year}-${month}` && (
+                <div className="p-2 mb-2 bg-gray-100">
+                  <h3 className="ml-2  font-bold mb-2">Details for {formatMonthYear(selectedMonth)}</h3>
+                  {Object.keys(groupedDebts).map((user) => (
+                    <div key={user} className="mb-2 ">
+                      <div className="ml-2 p-2 mb-2 bg-white border rounded flex justify-between shadow cursor-pointer" onClick={() => toggleGroup(user)}>
+                        <span>{user}</span>
+                        <span>{groupedDebts[user].sum.toFixed(2)}</span>
+                      </div>
+                      {expandedGroups[user] && (
+                        <div className="ml-4">
+                          {Object.keys(groupedDebts[user].creditCards).map((creditCard) => (
+                            <div key={creditCard} className="mb-2">
+                              <div className="p-2 border mb-2 bg-white flex justify-between rounded shadow cursor-pointer" onClick={() => toggleGroup(`${user}-${creditCard}`)}>
+                                <span>{creditCard}</span>
+                                <span>{groupedDebts[user].creditCards[creditCard].sum.toFixed(2)}</span>
+                              </div>
+                              {expandedGroups[`${user}-${creditCard}`] && (
+                                <div className="ml-4">
+                                  {Object.keys(groupedDebts[user].creditCards[creditCard].flags).map((flag) => (
+                                    <div key={flag} className="mb-2">
+                                      <div className="p-2 border bg-white flex justify-between rounded shadow cursor-pointer" onClick={() => toggleGroup(`${user}-${creditCard}-${flag}`)}>
+                                        <span>{flag}</span>
+                                        <span>{groupedDebts[user].creditCards[creditCard].flags[flag].sum.toFixed(2)}</span>
+                                      </div>
+                                      {expandedGroups[`${user}-${creditCard}-${flag}`] && (
+                                        <DebtDetailsTable
+                                          debts={groupedDebts[user].creditCards[creditCard].flags[flag].debts}
+                                          onEdit={handleEditClick}
+                                          onDelete={(debt) => deleteDebt(debt._id)}
+                                        />
+                                      )}
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          );
+        })}
+        </ul>
+      </div>
+      {/* <ul>
         {Object.keys(sums).map((key) => {
           const [year, month] = key.split('-');
           return (
@@ -460,24 +548,48 @@ const Debts = () => {
       {selectedMonth && (
         <div className="mt-4">
           <h3 className="text-xl font-bold mb-2">Details for {formatMonthYear(selectedMonth)}</h3>
-            {Object.keys(groupedDebts).map((groupKey) => (
-              <div key={groupKey} className="mb-2 p-2 border rounded shadow cursor-pointer" onClick={() => toggleGroup(groupKey)}>
-                <div className="flex justify-between">
-                  <span>{groupKey}</span>
-                  <span>${groupedDebts[groupKey].reduce((acc, debt) => acc + debt.paid, 0).toFixed(2)}</span>
-                </div>
-                {expandedGroups[groupKey] && (
-                  <DebtDetailsTable 
-                    debts={groupedDebts[groupKey]}
-                    onEdit={handleEditClick}
-                    onDelete={deleteDebt}
-                  />
-                )}
+          {Object.keys(groupedDebts).map((user) => (
+            <div key={user} className="mb-4">
+              <div className="p-2 border flex justify-between rounded shadow cursor-pointer" onClick={() => toggleGroup(user)}>
+                <span>{user}</span>
+                <span>${groupedDebts[user].sum.toFixed(2)}</span>
               </div>
-            ))}
-        </div>
-      )}
-    </Card>
+              {expandedGroups[user] && (
+                <div className="ml-4">
+                  {Object.keys(groupedDebts[user].creditCards).map((creditCard) => (
+                    <div key={creditCard} className="mb-2">
+                      <div className="p-2 border flex justify-between rounded shadow cursor-pointer" onClick={() => toggleGroup(`${user}-${creditCard}`)}>
+                        <span>{creditCard}</span>
+                        <span>${groupedDebts[user].creditCards[creditCard]?.sum.toFixed(2)}</span>
+                      </div>
+                      {expandedGroups[`${user}-${creditCard}`] && (
+                        <div className="ml-4">
+                          {Object.keys(groupedDebts[user].creditCards[creditCard].flags).map((flag) => (
+                            <div key={flag} className="mb-2">
+                              <div className="p-2 border flex justify-between rounded shadow cursor-pointer" onClick={() => toggleGroup(`${user}-${creditCard}-${flag}`)}>
+                                <span>{flag}</span>
+                                <span>${groupedDebts[user].creditCards[creditCard].flags[flag].sum.toFixed(2)}</span>
+                              </div>
+                              {expandedGroups[`${user}-${creditCard}-${flag}`] && (
+                                <DebtDetailsTable
+                                  debts={groupedDebts[user].creditCards[creditCard].flags[flag].debts}
+                                  onEdit={handleEditClick}
+                                  onDelete={deleteDebt}
+                                />
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
+          </div>
+      )} */}
+      </Card>
   );
 };
 

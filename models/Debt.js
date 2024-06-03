@@ -60,6 +60,10 @@ const DebtSchema = new mongoose.Schema({
     type: Date,
     required: [true, 'Please provide a transaction date'],
   },
+  user: {
+    type: String,
+    required: [true, 'Please provide a user'],
+  },
 });
 
 export default mongoose.models.Debt || mongoose.model('Debt', DebtSchema);
