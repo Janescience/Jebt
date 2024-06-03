@@ -261,14 +261,11 @@ const Debts = () => {
     const groups = {};
 
     debtDetails.forEach((debt) => {
-        const creditCard = debt.creditCard ? debt.creditCard.name : 'No Credit Card';
-        const color = debt.creditCard ? debt.creditCard.color : 'gray';
-        const groupKey = `${creditCard} - ${debt.flag}`;
-
-        if (!groups[groupKey]) {
-            groups[groupKey] = { color, debts: [] };
-        }
-        groups[groupKey].debts.push(debt);
+      const groupKey = `${debt.creditCard ? debt.creditCard.name : 'No Credit Card'} - ${debt.flag}`;
+      if (!groups[groupKey]) {
+        groups[groupKey] = [];
+      }
+      groups[groupKey].push(debt);
     });
 
     return groups;
@@ -473,7 +470,7 @@ const Debts = () => {
           <ul>
             {Object.keys(groupedDebts).map((groupKey) => (
               <li key={groupKey} className="mb-2 p-2 border rounded shadow cursor-pointer" onClick={() => toggleGroup(groupKey)}>
-                <div className="flex justify-between" style={{ backgroundColor: groupedDebts[groupKey].color }}>
+                <div className="flex justify-between">
                   <span>{groupKey}</span>
                   <span>${groupedDebts[groupKey].reduce((acc, debt) => acc + debt.paid, 0).toFixed(2)}</span>
                 </div>
@@ -485,12 +482,12 @@ const Debts = () => {
                         <div>
                             <p className="font-bold">{debt.name}</p>
                             <p>Type: {debt.type}</p>
-                            <p>Credit Card: {debt.creditCard ? debt.creditCard.name : 'N/A'}</p>
+                            {/* <p>Credit Card: {debt.creditCard ? debt.creditCard.name : 'N/A'}</p> */}
                             <p>Detail: {debt.detail}</p>
                             <p>Amount: ${debt.amount.toFixed(2)}</p>
-                            <p>Flag: {debt.flag}</p>
-                            <p>Month: {debt.month+1}</p>
-                            <p>Year: {debt.year}</p>
+                            {/* <p>Flag: {debt.flag}</p>
+                            <p>Month: {debt.month+1}</p> */}
+                            {/* <p>Year: {debt.year}</p> */}
                             <p>Period: {debt.currentPeriod}/{debt.allPeriod}</p>
                             <p>Paid: ${debt.paid.toFixed(2)}</p>
                             <p>Balance: ${debt.balance.toFixed(2)}</p>
