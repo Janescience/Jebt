@@ -1,6 +1,6 @@
 const Table = ({ headers, data, actions }) => (
   <div class="overflow-x-auto ">
-      <table className="mt-2 border-collapse border border-slate-500 bg-white w-full">
+      <table className="mt-2 rounded shadow border-collapse border-0 border-slate-500 bg-white w-full">
       <thead>
         <tr>
           {headers.map((header) => (
@@ -22,7 +22,7 @@ const Table = ({ headers, data, actions }) => (
             {actions && (
               <td className="p-1">
                 {actions.map(({ label, onClick, className }, actionIndex) => (
-                  <button key={actionIndex} onClick={() => onClick(row)} className={className}>
+                  <button key={actionIndex} onClick={() => onClick(row.debt)} className={className}>
                     {label}
                   </button>
                 ))}

@@ -2,30 +2,31 @@ import Table from './Table';
 
 const DebtDetailsTable = ({ debts, onEdit, onDelete }) => {
   const headers = [
-    'Name',
-    'Type',
+    'name',
+    'type',
     // 'Detail',
-    'Amount',
-    'Period',
-    'Paid',
+    'amount',
+    'period',
+    'paid',
     // 'Balance',
-    'Interest',
-    'TransactionDate',
-    'User'
+    'interest',
+    'transactionDate',
+    'user'
   ];
 
   const data = debts.map((debt) => ({
-    Id : debt._id,
-    Name: debt.name,
-    Type: debt.type == 'credit card' ? 'CC' : '',
+    id : debt._id,
+    name: debt.name,
+    type: debt.type == 'credit card' ? 'CC' : '',
     // Detail: debt.detail,
-    Amount: debt.amount,
-    Period: `${debt.currentPeriod}/${debt.allPeriod}`,
-    Paid: debt.paid.toFixed(2),
+    amount: debt.amount,
+    period: `${debt.currentPeriod}/${debt.allPeriod}`,
+    paid: debt.paid.toFixed(2),
     // Balance: `$${debt.balance.toFixed(2)}`,
-    Interest: debt.interest,
-    TransactionDate: debt.transactionDate.split('T')[0],
-    User : debt.user
+    interest: debt.interest,
+    transactionDate: debt.transactionDate.split('T')[0],
+    user : debt.user,
+    debt : debt
   }));
 
   const actions = [

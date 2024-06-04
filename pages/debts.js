@@ -4,7 +4,11 @@ import { toast } from 'react-toastify';
 import Card from '@/components/Card';
 import Button from '@/components/Button';
 import Input from '@/components/Input';
-import DebtDetailsTable from '@/components/DebtDetailsTable';
+import DebtForm from '@/components/DebtForm';
+import DebtDetails from '@/components/DebtDetails';
+
+import { FaPlus } from 'react-icons/fa';
+
 
 const Debts = () => {
   const currentYear = new Date().getFullYear();
@@ -131,7 +135,9 @@ const Debts = () => {
     } else {
       await addDebt(payload);
     }
-  
+
+    fetchSums(selectedYear);
+
     if (selectedMonth) {
       const [year, month] = selectedMonth.split('-');
       fetchDebtDetails(year, month);
@@ -187,8 +193,7 @@ const Debts = () => {
   };
 
   const deleteDebt = async (debt) => {
-    console.log('deleteDebt : ',debt)
-    const res = await fetch(`/api/debts/${debt.Id}`, {
+    const res = await fetch(`/api/debts/${debt.id}`, {
       method: 'DELETE',
     });
     if (res.ok) {
@@ -207,7 +212,7 @@ const Debts = () => {
     setFormValues({
       name: debt.name,
       type: debt.type,
-      creditCard: debt.creditCard || '',
+      creditCard: debt.creditCard._id,
       detail: debt.detail,
       amount: debt.amount,
       flag: debt.flag,
@@ -299,297 +304,46 @@ const Debts = () => {
   const groupedDebts = groupDebts();
 
   return (
-    <Card title="Debts">
+    <Card title="">
+      <div className="mb-4 flex justify-between items-center">
+        <h1 className="text-2xl font-bold">Debts</h1>
+        <Button onClick={handleAddClick}><FaPlus/></Button>
+      </div>
       <div className="mb-4 flex justify-between">
-        <Button onClick={handleAddClick}>Create Debt</Button>
-        <Input 
-          label="" 
-          type="select" 
-          name="year" 
-          value={selectedYear} 
-          onChange={handleYearChange} 
-          options={getYearsOptions().map((year)=> ({ value: year, label: year }))} 
+        <Input
+          label=""
+          type="select"
+          name="year"
+          value={selectedYear}
+          onChange={handleYearChange}
+          options={getYearsOptions().map((year) => ({ value: year, label: year }))}
         />
       </div>
       {showForm && (
-        <form onSubmit={handleFormSubmit} className="mb-4 bg-gray-100 p-5 rounded shadow">
-          <h3 className="text-xl font-bold mb-4">{editingDebt ? 'Edit Debt Details' : 'Input Debt Details'}</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Input
-              label="Name"
-              type="text"
-              name="name"
-              value={formValues.name}
-              onChange={handleInputChange}
-              required
-            />
-            <Input
-              label="Type"
-              type="select"
-              name="type"
-              value={formValues.type}
-              onChange={handleInputChange}
-              required
-              options={[
-                {
-                  value:'credit card',
-                  label:'Credit Card'
-                },                   
-                {
-                  value:'regular',
-                  label:'Regular' 
-                },                 
-                {
-                  value:'cash',
-                  label:'Cash' 
-                }, ]} 
-            />
-            {formValues.type === 'credit card' && (
-              <Input
-                label="Credit Card"
-                type="select"
-                name="creditCard"
-                value={formValues.creditCard}
-                onChange={handleInputChange}
-                required
-                options={[
-                  {
-                    value:'',
-                    label:'Select Credit Card'
-                  },                   
-                  ...creditCards.map((card) => ({value:card._id,label:card.name}))  
-                ]} 
-              />
-            )}
-            <Input
-              label="Detail"
-              type="text"
-              name="detail"
-              value={formValues.detail}
-              onChange={handleInputChange}
-              
-            />
-            <Input
-              label="Amount"
-              type="number"
-              name="amount"
-              value={formValues.amount}
-              onChange={handleInputChange}
-              required
-            />
-            <Input
-              label="Flag"
-              type="select"
-              name="flag"
-              value={formValues.flag}
-              onChange={handleInputChange}
-              required
-              options={[
-                {
-                  value:'installment',
-                  label:'Installment'
-                },                   
-                {
-                  value:'paid full',
-                  label:'Paid Full' 
-                },                 
-              ]} 
-            />
-            {formValues.flag === 'installment' && (
-              <>
-                <Input
-                  label="Month Start"
-                  type="number"
-                  name="monthStart"
-                  value={formValues.monthStart}
-                  onChange={handleInputChange}
-                  required
-                />
-                <Input
-                  label="Year Start"
-                  type="select"
-                  name="yearStart"
-                  value={formValues.yearStart}
-                  onChange={handleInputChange}
-                  required
-                  options={[
-                    ...getYearsOptions().map((year) => ({value:year,label:year}))                   
-                  ]} 
-                />
-                <Input
-                  label="Period"
-                  type="number"
-                  name="allPeriod"
-                  value={formValues.allPeriod}
-                  onChange={handleInputChange}
-                  required
-                />
-                <Input
-                  label="Paid/Period"
-                  type="number"
-                  name="paid"
-                  value={formValues.paid}
-                  onChange={handleInputChange}
-                  required
-                />
-                <Input
-                  label="Balance"
-                  type="number"
-                  name="balance"
-                  value={formValues.balance}
-                  onChange={handleInputChange}
-                  required
-                />
-                <Input
-                  label="Interest"
-                  type="number"
-                  name="interest"
-                  value={formValues.interest}
-                  onChange={handleInputChange}
-                  required
-                />
-              </>
-            )}
-            <Input
-                label="Transaction Date"
-                type="date"
-                name="transactionDate"
-                value={formValues.transactionDate}
-                onChange={handleInputChange}
-                required
-              />
-          </div>
-          <Button type="submit">{editingDebt ? 'Update':'Save'}</Button>
-        </form>
+        <DebtForm
+          formValues={formValues}
+          handleInputChange={handleInputChange}
+          handleFormSubmit={handleFormSubmit}
+          editingDebt={editingDebt}
+          getYearsOptions={getYearsOptions}
+          creditCards={creditCards}
+        />
       )}
-      <div>
-        <ul>
-        {Object.keys(sums).map((key) => {
-          const [year, month] = key.split('-');
-          const isSelected = selectedMonth === `${year}-${month}`;
-          const isCurrentMonth = currentYear === parseInt(year) && currentMonth === parseInt(month);
-          return (
-            <div key={key}>
-              <li
-                className={`mb-2 p-2 text-lg border rounded shadow cursor-pointer ${isCurrentMonth ? 'bg-green-200 font-bold	' : ''}`}
-                onClick={() => handleMonthClick(year, month)}
-              >
-                <div className="flex justify-between">
-                  <span>{formatMonthYear(key)}</span>
-                  <span>{sums[key].toFixed(2)}</span>
-                </div>
-              </li>
-              {selectedMonth === `${year}-${month}` && (
-                <div className="p-2 mb-2 bg-gray-100">
-                  <h3 className="ml-2  font-bold mb-2">Details for {formatMonthYear(selectedMonth)}</h3>
-                  {Object.keys(groupedDebts).map((user) => (
-                    <div key={user} className="mb-2 ">
-                      <div className="ml-2 p-2 mb-2 bg-white border rounded flex justify-between shadow cursor-pointer" onClick={() => toggleGroup(user)}>
-                        <span>{user}</span>
-                        <span>{groupedDebts[user].sum.toFixed(2)}</span>
-                      </div>
-                      {expandedGroups[user] && (
-                        <div className="ml-4">
-                          {Object.keys(groupedDebts[user].creditCards).map((creditCard) => (
-                            <div key={creditCard} className="mb-2">
-                              <div className="p-2 border mb-2 bg-white flex justify-between rounded shadow cursor-pointer" onClick={() => toggleGroup(`${user}-${creditCard}`)}>
-                                <span>{creditCard}</span>
-                                <span>{groupedDebts[user].creditCards[creditCard].sum.toFixed(2)}</span>
-                              </div>
-                              {expandedGroups[`${user}-${creditCard}`] && (
-                                <div className="ml-4">
-                                  {Object.keys(groupedDebts[user].creditCards[creditCard].flags).map((flag) => (
-                                    <div key={flag} className="mb-2">
-                                      <div className="p-2 border bg-white flex justify-between rounded shadow cursor-pointer" onClick={() => toggleGroup(`${user}-${creditCard}-${flag}`)}>
-                                        <span>{flag}</span>
-                                        <span>{groupedDebts[user].creditCards[creditCard].flags[flag].sum.toFixed(2)}</span>
-                                      </div>
-                                      {expandedGroups[`${user}-${creditCard}-${flag}`] && (
-                                        <DebtDetailsTable
-                                          debts={groupedDebts[user].creditCards[creditCard].flags[flag].debts}
-                                          onEdit={handleEditClick}
-                                          onDelete={(debt) => deleteDebt(debt._id)}
-                                        />
-                                      )}
-                                    </div>
-                                  ))}
-                                </div>
-                              )}
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          );
-        })}
-        </ul>
-      </div>
-      {/* <ul>
-        {Object.keys(sums).map((key) => {
-          const [year, month] = key.split('-');
-          return (
-            <li
-              key={key}
-              className="mb-2 p-2 border rounded shadow cursor-pointer"
-              onClick={() => handleMonthClick(year, month)}
-            >
-              <div className="flex justify-between">
-                <span>{formatMonthYear(key)}</span>
-                <span>${sums[key].toFixed(2)}</span>
-              </div>
-            </li>
-          );
-        })}
-      </ul>
-      {selectedMonth && (
-        <div className="mt-4">
-          <h3 className="text-xl font-bold mb-2">Details for {formatMonthYear(selectedMonth)}</h3>
-          {Object.keys(groupedDebts).map((user) => (
-            <div key={user} className="mb-4">
-              <div className="p-2 border flex justify-between rounded shadow cursor-pointer" onClick={() => toggleGroup(user)}>
-                <span>{user}</span>
-                <span>${groupedDebts[user].sum.toFixed(2)}</span>
-              </div>
-              {expandedGroups[user] && (
-                <div className="ml-4">
-                  {Object.keys(groupedDebts[user].creditCards).map((creditCard) => (
-                    <div key={creditCard} className="mb-2">
-                      <div className="p-2 border flex justify-between rounded shadow cursor-pointer" onClick={() => toggleGroup(`${user}-${creditCard}`)}>
-                        <span>{creditCard}</span>
-                        <span>${groupedDebts[user].creditCards[creditCard]?.sum.toFixed(2)}</span>
-                      </div>
-                      {expandedGroups[`${user}-${creditCard}`] && (
-                        <div className="ml-4">
-                          {Object.keys(groupedDebts[user].creditCards[creditCard].flags).map((flag) => (
-                            <div key={flag} className="mb-2">
-                              <div className="p-2 border flex justify-between rounded shadow cursor-pointer" onClick={() => toggleGroup(`${user}-${creditCard}-${flag}`)}>
-                                <span>{flag}</span>
-                                <span>${groupedDebts[user].creditCards[creditCard].flags[flag].sum.toFixed(2)}</span>
-                              </div>
-                              {expandedGroups[`${user}-${creditCard}-${flag}`] && (
-                                <DebtDetailsTable
-                                  debts={groupedDebts[user].creditCards[creditCard].flags[flag].debts}
-                                  onEdit={handleEditClick}
-                                  onDelete={deleteDebt}
-                                />
-                              )}
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          ))}
-          </div>
-      )} */}
-      </Card>
+      <DebtDetails
+        sums={sums}
+        handleMonthClick={handleMonthClick}
+        selectedMonth={selectedMonth}
+        currentYear={currentYear}
+        currentMonth={currentMonth}
+        formatMonthYear={formatMonthYear}
+        groupedDebts={groupedDebts}
+        toggleGroup={toggleGroup}
+        expandedGroups={expandedGroups}
+        handleEditClick={handleEditClick}
+        deleteDebt={deleteDebt}
+      />
+      
+    </Card>
   );
 };
 
