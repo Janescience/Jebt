@@ -3,7 +3,7 @@ import { FaCreditCard, FaMoneyBillWave, FaChartPie, FaBars } from 'react-icons/f
 
 const Sidebar = ({ show, setShow }) => {
   return (
-    <div className={`fixed top-0 left-0 h-screen w-48 bg-black text-white p-5 transition-transform transform ${show ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 md:relative`}>
+    <div className={`fixed top-0 left-0 h-screen overflow-y-auto w-48 bg-black text-white p-5 transition-position transition-transform transform ${show ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 md:relative`}>
       <div className="flex justify-between items-center mb-5">
         <h1 className="text-2xl">Jebt</h1>
         <button onClick={() => setShow(!show)} className="md:hidden">

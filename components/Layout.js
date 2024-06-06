@@ -2,6 +2,7 @@ import { useState } from 'react';
 import Sidebar from './Sidebar';
 import { FaBars } from 'react-icons/fa';
 
+
 const Layout = ({ children }) => {
   const [showSidebar, setShowSidebar] = useState(false);
 

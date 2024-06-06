@@ -77,7 +77,7 @@ const Debts = () => {
   const formatMonthYear = (key) => {
     const [year, month] = key.split('-');
     const date = new Date(year, month - 1);
-    return date.toLocaleString('default', { month: 'long', year: 'numeric' });
+    return date.toLocaleString('default', {month: 'long' });
   };
 
   const handleInputChange = (e) => {
@@ -275,7 +275,7 @@ const Debts = () => {
     const groups = {};
   
     debtDetails.forEach((debt) => {
-      const user = debt.user ? debt.user.name : 'No User';  // Assuming debt has a user field
+      const user = debt.user ? debt.user : 'No User';  // Assuming debt has a user field
       const creditCard = debt.creditCard ? debt.creditCard.name : 'No Credit Card';
       const flag = debt.flag;
   
@@ -307,9 +307,6 @@ const Debts = () => {
     <Card title="">
       <div className="mb-4 flex justify-between items-center">
         <h1 className="text-2xl font-bold">Debts</h1>
-        <Button onClick={handleAddClick}><FaPlus/></Button>
-      </div>
-      <div className="mb-4 flex justify-between">
         <Input
           label=""
           type="select"
@@ -318,6 +315,10 @@ const Debts = () => {
           onChange={handleYearChange}
           options={getYearsOptions().map((year) => ({ value: year, label: year }))}
         />
+        <Button onClick={handleAddClick}><FaPlus/></Button>
+      </div>
+      <div className="mb-4 flex justify-between">
+        
       </div>
       {showForm && (
         <DebtForm
