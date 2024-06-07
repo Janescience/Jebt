@@ -303,6 +303,12 @@ const Debts = () => {
 
   const groupedDebts = groupDebts();
 
+  const sortedMonthKeys = Object.keys(sums).sort((a, b) => {
+    const [yearA, monthA] = a.split('-').map(Number);
+    const [yearB, monthB] = b.split('-').map(Number);
+    return new Date(yearA, monthA - 1) - new Date(yearB, monthB - 1);
+  });
+
   return (
     <Card title="">
       <div className="mb-4 flex justify-between items-center">
@@ -331,6 +337,7 @@ const Debts = () => {
       )}
       <DebtDetails
         sums={sums}
+        debtSorted={sortedMonthKeys}
         handleMonthClick={handleMonthClick}
         selectedMonth={selectedMonth}
         currentYear={currentYear}

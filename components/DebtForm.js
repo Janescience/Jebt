@@ -28,7 +28,7 @@ const DebtForm = ({ formValues, handleInputChange, handleFormSubmit, editingDebt
         <>
           <Input label="Month Start" type="number" name="monthStart" value={formValues.monthStart} onChange={handleInputChange} required />
           <Input label="Year Start" type="select" name="yearStart" value={formValues.yearStart} onChange={handleInputChange} options={getYearsOptions().map((year) => ({ value: year, label: year }))} required />
-          <Input label="Period" type="number" name="period" value={formValues.allPeriod} onChange={handleInputChange} required />
+          <Input label="Period" type="number" name="allPeriod" value={formValues.allPeriod} onChange={handleInputChange} required />
           <Input label="Paid/Period" type="number" name="paid" value={formValues.paid} onChange={handleInputChange} required readOnly />
           <Input label="Balance" type="number" name="balance" value={formValues.balance} onChange={handleInputChange} required readOnly />
           <Input label="Interest" type="number" name="interest" value={formValues.interest} onChange={handleInputChange} required />

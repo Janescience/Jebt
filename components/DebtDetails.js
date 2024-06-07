@@ -1,8 +1,8 @@
 import React from 'react';
 import DebtDetailsTable from './DebtDetailsTable';
-const DebtDetails = ({ sums, handleMonthClick, selectedMonth, currentYear, currentMonth, formatMonthYear, groupedDebts, toggleGroup, expandedGroups, handleEditClick, deleteDebt }) => (
+const DebtDetails = ({ sums, debtSorted,handleMonthClick, selectedMonth, currentYear, currentMonth, formatMonthYear, groupedDebts, toggleGroup, expandedGroups, handleEditClick, deleteDebt }) => (
     <ul>
-        {Object.keys(sums).map((key) => {
+        {debtSorted.map((key) => {
             const [year, month] = key.split('-');
             const isCurrentMonth = currentYear === parseInt(year) && currentMonth === parseInt(month);
             return (
