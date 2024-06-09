@@ -6,6 +6,8 @@ import Button from '@/components/Button';
 import Input from '@/components/Input';
 import DebtForm from '@/components/DebtForm';
 import DebtDetails from '@/components/DebtDetails';
+import ConfirmModal from '@/components/ConfirmModal';
+import Loading from '@/components/Loading';
 
 import { FaPlus } from 'react-icons/fa';
 
@@ -36,17 +38,22 @@ const Debts = () => {
     user : 'Jane'
   });
 
+  const [loading, setLoading] = useState(true);
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [expandedGroups, setExpandedGroups] = useState({});
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [debtToDelete, setDebtToDelete] = useState(null);
 
   useEffect(() => {
     fetchSums(selectedYear);
   }, [selectedYear]);
 
   const fetchSums = async (year) => {
+    setLoading(true);
     const res = await fetch(`/api/debts/yearly/${year}`);
     const data = await res.json();
     setSums(data.data);
+    setLoading(false);
   };
 
 
@@ -63,10 +70,13 @@ const Debts = () => {
   }, [formValues.type]);
 
   const fetchDebtDetails = async (year, month) => {
+    setLoading(true);
     const res = await fetch(`/api/debts/monthly/${year}/${month}`);
     const data = await res.json();
     setDebtDetails(data.data);
     fetchSums(selectedYear);
+    setLoading(false);
+
   };
 
   const handleMonthClick = (year, month) => {
@@ -207,6 +217,38 @@ const Debts = () => {
     }
   };
 
+  const deleteAllDebts = async (name, type) => {
+    const res = await fetch(`/api/debts`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ name, type }),
+    });
+    if (res.ok) {
+      toast.success('All periods of the debt deleted successfully');
+      if (selectedMonth) {
+        const [year, month] = selectedMonth.split('-');
+        fetchDebtDetails(year, month);
+      }
+    } else {
+      toast.error('Failed to delete debts');
+    }
+  };
+
+  const handleDeleteAllClick = (debt) => {
+    setDebtToDelete(debt);
+    setIsModalOpen(true);
+  };
+
+  const confirmDeleteAll = () => {
+    if (debtToDelete) {
+      deleteAllDebts(debtToDelete.name, debtToDelete.type);
+    }
+    setIsModalOpen(false);
+    setDebtToDelete(null);
+  };
+
   const handleEditClick = (debt) => {
     setEditingDebt(debt);
     setFormValues({
@@ -321,7 +363,9 @@ const Debts = () => {
           onChange={handleYearChange}
           options={getYearsOptions().map((year) => ({ value: year, label: year }))}
         />
-        <Button onClick={handleAddClick}><FaPlus/></Button>
+        <div >
+          <Button onClick={handleAddClick}><FaPlus/></Button>
+        </div>
       </div>
       <div className="mb-4 flex justify-between">
         
@@ -336,21 +380,32 @@ const Debts = () => {
           creditCards={creditCards}
         />
       )}
-      <DebtDetails
-        sums={sums}
-        debtSorted={sortedMonthKeys}
-        handleMonthClick={handleMonthClick}
-        selectedMonth={selectedMonth}
-        currentYear={currentYear}
-        currentMonth={currentMonth}
-        formatMonthYear={formatMonthYear}
-        groupedDebts={groupedDebts}
-        toggleGroup={toggleGroup}
-        expandedGroups={expandedGroups}
-        handleEditClick={handleEditClick}
-        deleteDebt={deleteDebt}
+      {loading ? (
+        <Loading />
+      ) : (
+        <DebtDetails
+          sums={sums}
+          debtSorted={sortedMonthKeys}
+          handleMonthClick={handleMonthClick}
+          selectedMonth={selectedMonth}
+          currentYear={currentYear}
+          currentMonth={currentMonth}
+          formatMonthYear={formatMonthYear}
+          groupedDebts={groupedDebts}
+          toggleGroup={toggleGroup}
+          expandedGroups={expandedGroups}
+          handleEditClick={handleEditClick}
+          deleteDebt={deleteDebt}
+          handleDeleteAllClick={handleDeleteAllClick}
+        />
+      )}
+      <ConfirmModal
+        isOpen={isModalOpen}
+        title="Confirm Delete"
+        message={`Are you sure delete all periods for ${debtToDelete?.name} (${debtToDelete?.type})?`}
+        onConfirm={confirmDeleteAll}
+        onCancel={() => setIsModalOpen(false)}
       />
-      
     </Card>
   );
 };

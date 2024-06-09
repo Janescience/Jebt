@@ -1,6 +1,7 @@
 import Table from './Table';
+import { FaRegEdit, FaRegTrashAlt, FaTrash } from 'react-icons/fa';
 
-const DebtDetailsTable = ({ debts, onEdit, onDelete }) => {
+const DebtDetailsTable = ({ debts, onEdit, onDelete , onDeleteAll}) => {
   const headers = [
     'name',
     'type',
@@ -30,8 +31,9 @@ const DebtDetailsTable = ({ debts, onEdit, onDelete }) => {
   }));
 
   const actions = [
-    { label: 'Edit', onClick: onEdit, className: 'text-blue-500 mr-2' },
-    { label: 'Delete', onClick: onDelete, className: 'text-red-500' },
+    { label: '', icon: FaRegEdit ,onClick: onEdit, className: 'mr-5' },
+    { label: '', icon: FaRegTrashAlt ,onClick: onDelete, className: 'mr-5' },
+    { label: '', icon: FaTrash ,onClick: onDeleteAll, className: '' },
   ];
 
   return <Table headers={headers} data={data} actions={actions} />;

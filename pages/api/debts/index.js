@@ -34,7 +34,7 @@ export default async function handler(req, res) {
       break;
     case 'POST':
       try {
-        const { name, type, creditCard, detail, amount,paid, flag, monthStart,yearStart, allPeriod, balance, interest, transactionDate } = req.body;
+        const { name, type, creditCard, detail, amount,paid, flag, monthStart,yearStart, allPeriod, balance, interest, transactionDate ,user} = req.body;
         const paidPerMonth = amount / allPeriod;
         const debts = [];
 
@@ -56,7 +56,8 @@ export default async function handler(req, res) {
                 paid,
                 balance: balance - (paidPerMonth * (i + 1)),
                 interest,
-                transactionDate:new Date(transactionDate)
+                transactionDate:new Date(transactionDate),
+                user
             });
         }
 
@@ -64,6 +65,15 @@ export default async function handler(req, res) {
         res.status(201).json({ success: true, data: debts });
       } catch (error) {
         res.status(400).json({ success: false, error });
+      }
+      break;
+    case 'DELETE':
+      try {
+        const { name, type } = req.body;
+        await Debt.deleteMany({ name, type });
+        res.status(200).json({ success: true, message: 'Debts deleted successfully' });
+      } catch (error) {
+        res.status(400).json({ success: false, message: 'Failed to delete debts' });
       }
       break;
     default:

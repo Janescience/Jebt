@@ -5,7 +5,7 @@ import Button from '@/components/Button';
 const DebtForm = ({ formValues, handleInputChange, handleFormSubmit, editingDebt, getYearsOptions, creditCards }) => (
   <form onSubmit={handleFormSubmit} className="mb-4 bg-gray-100 p-5 rounded shadow">
     <h3 className="text-xl font-bold mb-4">{editingDebt ? 'Edit Debt' : 'Add Debt'}</h3>
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
       <Input label="Name" type="text" name="name" value={formValues.name} onChange={handleInputChange} required />
       <Input label="Type" type="select" name="type" value={formValues.type} onChange={handleInputChange} required options={[
         { value: 'credit card', label: 'Credit Card' },
@@ -35,7 +35,10 @@ const DebtForm = ({ formValues, handleInputChange, handleFormSubmit, editingDebt
         </>
       )}
       <Input label="Transaction Date" type="date" name="transactionDate" value={formValues.transactionDate} onChange={handleInputChange} required />
-      <Button type="submit" >{editingDebt ? 'Update' : 'Save'}</Button>
+      <Input label="User" type="text" name="user" value={formValues.user} onChange={handleInputChange} required />
+      <div className='col-span-2 flex '>
+        <Button type="submit" >{editingDebt ? 'Update' : 'Save'}</Button>
+      </div>
 
     </div>
   </form>

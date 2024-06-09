@@ -1,7 +1,7 @@
 import React from 'react';
 import DebtDetailsTable from './DebtDetailsTable';
 import UserAvatar from './UserAvatar';
-const DebtDetails = ({ sums, debtSorted,handleMonthClick, selectedMonth, currentYear, currentMonth, formatMonthYear, groupedDebts, toggleGroup, expandedGroups, handleEditClick, deleteDebt }) => (
+const DebtDetails = ({ sums, debtSorted,handleMonthClick, selectedMonth, currentYear, currentMonth, formatMonthYear, groupedDebts, toggleGroup, expandedGroups, handleEditClick, deleteDebt ,handleDeleteAllClick}) => (
     <ul>
         {debtSorted.map((key) => {
             const [year, month] = key.split('-');
@@ -54,6 +54,7 @@ const DebtDetails = ({ sums, debtSorted,handleMonthClick, selectedMonth, current
                                                                     debts={groupedDebts[user].creditCards[creditCard].flags[flag].debts}
                                                                     onEdit={handleEditClick}
                                                                     onDelete={deleteDebt}
+                                                                    onDeleteAll={handleDeleteAllClick}
                                                                     />
                                                                 )}
                                                             </div>

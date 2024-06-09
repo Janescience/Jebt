@@ -1,6 +1,6 @@
 const Table = ({ headers, data, actions }) => (
   <div class="overflow-x-auto ">
-      <table className="mt-2 rounded shadow border-collapse border-0 border-slate-500 bg-white w-full">
+      <table className="mt-2 rounded shadow border-collapse border-2 border-slate-200 bg-white w-full">
       <thead>
         <tr>
           {headers.map((header) => (
@@ -8,22 +8,22 @@ const Table = ({ headers, data, actions }) => (
               {header}
             </th>
           ))}
-          {actions && <th >Actions</th>}
+          {actions && <th >actions</th>}
         </tr>
       </thead>
       <tbody>
         {data.map((row, rowIndex) => (
           <tr key={rowIndex} >
             {headers.map((header, colIndex) => (
-              <td key={colIndex} className="p-1">
+              <td key={colIndex} className="p-1 text-center">
                 {row[header]}
               </td>
             ))}
             {actions && (
-              <td className="p-1">
-                {actions.map(({ label, onClick, className }, actionIndex) => (
+              <td className="p-2 text-center">
+                {actions.map(({ label, onClick, className ,icon: Icon}, actionIndex) => (
                   <button key={actionIndex} onClick={() => onClick(row.debt)} className={className}>
-                    {label}
+                    {label != '' ? label : <Icon />}
                   </button>
                 ))}
               </td>
