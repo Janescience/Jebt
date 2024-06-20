@@ -1,5 +1,5 @@
 const Table = ({ headers, data, actions }) => (
-  <div class="overflow-x-auto ">
+  <div className="overflow-x-auto ">
       <table className="mt-2 rounded shadow border-collapse border-2 border-slate-200 bg-white w-full">
       <thead>
         <tr>

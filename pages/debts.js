@@ -43,17 +43,10 @@ const Debts = () => {
   const [expandedGroups, setExpandedGroups] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [debtToDelete, setDebtToDelete] = useState(null);
-  const [regulars, setRegulars] = useState([]);
 
   useEffect(() => {
-    fetchSums(selectedYear);
+     fetchSums(selectedYear);
   }, [selectedYear]);
-
-  const fetchDatas = async () => {
-    const res = await fetch(`/api/regualr`);
-    const data = await res.json();
-    setRegulars(data.data);
-  };
 
   const fetchSums = async (year) => {
     setLoading(true);
@@ -371,7 +364,7 @@ const Debts = () => {
           options={getYearsOptions().map((year) => ({ value: year, label: year }))}
         />
         <div >
-          <Button onClick={handleAddClick}><FaPlus/></Button>
+          <Button onClick={handleAddClick} className='w-full h-8  bg-black text-white p-2 rounded-full shadow-md'><FaPlus/></Button>
         </div>
       </div>
       <div className="mb-4 flex justify-between">
