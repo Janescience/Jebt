@@ -1,5 +1,5 @@
 import Table from './Table';
-import { FaRegEdit, FaRegTrashAlt, FaTrash } from 'react-icons/fa';
+import { FaRegEdit, FaRegTrashAlt, FaRegWindowClose } from 'react-icons/fa';
 
 const DebtDetailsTable = ({ debts, onEdit, onDelete , onDeleteAll}) => {
   const headers = [
@@ -12,7 +12,7 @@ const DebtDetailsTable = ({ debts, onEdit, onDelete , onDeleteAll}) => {
     // 'Balance',
     'interest',
     'transactionDate',
-    'user'
+    // 'user'
   ];
 
   const data = debts.map((debt) => ({
@@ -26,14 +26,14 @@ const DebtDetailsTable = ({ debts, onEdit, onDelete , onDeleteAll}) => {
     // Balance: `$${debt.balance.toFixed(2)}`,
     interest: debt.interest,
     transactionDate: debt.transactionDate.split('T')[0],
-    user : debt.user,
+    // user : debt.user,
     debt : debt
   }));
 
   const actions = [
     { label: '', icon: FaRegEdit ,onClick: onEdit, className: 'mr-5' },
     { label: '', icon: FaRegTrashAlt ,onClick: onDelete, className: 'mr-5' },
-    { label: '', icon: FaTrash ,onClick: onDeleteAll, className: '' },
+    { label: '', icon: FaRegWindowClose ,onClick: onDeleteAll, className: '' },
   ];
 
   return <Table headers={headers} data={data} actions={actions} />;

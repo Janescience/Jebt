@@ -23,8 +23,8 @@ const Sidebar = ({ show, setShow }) => {
             </Link>
           </li>
           <li className="flex items-center text-white">
-            <Link href="/summary">
-              Summary
+            <Link href="/regular">
+              Regular
             </Link>
           </li>
         </ul>
