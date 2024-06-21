@@ -4,13 +4,13 @@ import { FaRegEdit, FaRegTrashAlt, FaRegWindowClose } from 'react-icons/fa';
 const DebtDetailsTable = ({ debts, onEdit, onDelete , onDeleteAll}) => {
   const headers = [
     'name',
-    'type',
+    // 'type',
     // 'Detail',
     'amount',
     'period',
     'paid',
     // 'Balance',
-    'interest',
+    // 'interest',
     'transactionDate',
     // 'user'
   ];
@@ -18,7 +18,7 @@ const DebtDetailsTable = ({ debts, onEdit, onDelete , onDeleteAll}) => {
   const data = debts.map((debt) => ({
     id : debt._id,
     name: debt.name,
-    type: debt.type == 'credit card' ? 'CC' : '',
+    // type: debt.type == 'credit card' ? 'CC' : '',
     // Detail: debt.detail,
     amount: debt.amount,
     period: `${debt.currentPeriod}/${debt.allPeriod}`,

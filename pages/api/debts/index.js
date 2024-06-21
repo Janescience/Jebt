@@ -69,8 +69,8 @@ export default async function handler(req, res) {
       break;
     case 'DELETE':
       try {
-        const { name, type } = req.body;
-        await Debt.deleteMany({ name, type });
+        const { name, type , user, amount , creditCard ,allPeriod, flag , detail} = req.body;
+        await Debt.deleteMany({ name, type, user, amount , creditCard ,allPeriod, flag, detail});
         res.status(200).json({ success: true, message: 'Debts deleted successfully' });
       } catch (error) {
         res.status(400).json({ success: false, message: 'Failed to delete debts' });

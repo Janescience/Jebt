@@ -217,13 +217,13 @@ const Debts = () => {
     }
   };
 
-  const deleteAllDebts = async (name, type) => {
+  const deleteAllDebts = async (debt) => {
     const res = await fetch(`/api/debts`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ name, type }),
+      body: JSON.stringify(debt),
     });
     if (res.ok) {
       toast.success('All periods of the debt deleted successfully');
@@ -243,7 +243,8 @@ const Debts = () => {
 
   const confirmDeleteAll = () => {
     if (debtToDelete) {
-      deleteAllDebts(debtToDelete.name, debtToDelete.type);
+      console.log('debtToDelete : ',debtToDelete)
+      deleteAllDebts(debtToDelete);
     }
     setIsModalOpen(false);
     setDebtToDelete(null);
