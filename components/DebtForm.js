@@ -37,7 +37,7 @@ const DebtForm = ({ formValues, handleInputChange, handleFormSubmit, editingDebt
       <Input label="Transaction Date" type="date" name="transactionDate" value={formValues.transactionDate} onChange={handleInputChange} required />
       <Input label="User" type="text" name="user" value={formValues.user} onChange={handleInputChange} required />
       <div className='col-span-2 flex '>
-        <Button type="submit" >{editingDebt ? 'Update' : 'Save'}</Button>
+        <Button type="submit" className="w-full h-10 bg-black text-white p-2 rounded-md shadow-md">{editingDebt ? 'Update' : 'Save'}</Button>
       </div>
 
     </div>
