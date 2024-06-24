@@ -28,7 +28,7 @@ const Regular = () => {
 
   useEffect(() => {
     fetchDatas();
-  });
+  },[]);
 
 
   const fetchDatas = async () => {
@@ -147,7 +147,7 @@ const Regular = () => {
     'name',
     'datail',
     'amount',
-    'user'
+    // 'user'
   ];
 
   const data = regulars.map((regular) => ({
@@ -159,8 +159,8 @@ const Regular = () => {
   }));
 
   const actions = [
-    { label: '', icon: FaRegEdit ,onClick: handleEditClick, className: 'mr-5' },
-    { label: '', icon: FaRegTrashAlt ,onClick: handleDeleteClick, className: 'mr-5' },
+    { label: '', icon: FaRegEdit ,onClick: handleEditClick, className: 'w-8 bg-black text-white rounded-md p-2 shadow mr-2' },
+    { label: '', icon: FaRegTrashAlt ,onClick: handleDeleteClick, className: 'w-8 bg-black text-red-500 rounded-md p-2 shadow' },
   ];
 
   const groupUser = () => {

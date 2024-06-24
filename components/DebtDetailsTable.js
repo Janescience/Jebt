@@ -31,8 +31,8 @@ const DebtDetailsTable = ({ debts, onEdit, onDelete , onDeleteAll}) => {
   }));
 
   const actions = [
-    { label: '', icon: FaRegEdit ,onClick: onEdit, className: 'w-8 bg-black text-white rounded-md p-2 shadow' },
-    { label: '', icon: FaRegTrashAlt ,onClick: onDelete, className: 'w-8 bg-black text-red-500 rounded-md p-2 shadow' },
+    { label: '', icon: FaRegEdit ,onClick: onEdit, className: 'w-8 bg-black text-white rounded-md p-2 shadow mr-2' },
+    { label: '', icon: FaRegTrashAlt ,onClick: onDelete, className: 'w-8 bg-black text-red-500 rounded-md p-2 shadow mr-2' },
     { label: '', icon: FaRegWindowClose ,onClick: onDeleteAll, className: 'w-8 bg-black text-red-500 rounded-md p-2 shadow' },
   ];
 

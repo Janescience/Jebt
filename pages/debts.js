@@ -18,6 +18,7 @@ const Debts = () => {
   const [sums, setSums] = useState({});
   const [selectedMonth, setSelectedMonth] = useState(null);
   const [debtDetails, setDebtDetails] = useState([]);
+  const [groupDebt, setGroupDebt] = useState({});
   const [editingDebt, setEditingDebt] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const [creditCards, setCreditCards] = useState([]);
@@ -48,6 +49,10 @@ const Debts = () => {
      fetchSums(selectedYear);
   }, [selectedYear]);
 
+  useEffect(() => {
+    groupDebts(debtDetails)
+  },[debtDetails])
+
   const fetchSums = async (year) => {
     setLoading(true);
     const res = await fetch(`/api/debts/yearly/${year}`);
@@ -76,7 +81,6 @@ const Debts = () => {
     setDebtDetails(data.data);
     fetchSums(selectedYear);
     setLoading(false);
-
   };
 
   const handleMonthClick = (year, month) => {
@@ -314,10 +318,10 @@ const Debts = () => {
     }));
   };
 
-  const groupDebts = () => {
+  const groupDebts = (details) => {
     const groups = {};
   
-    debtDetails.forEach((debt) => {
+    details.forEach((debt) => {
       const user = debt.user ? debt.user : 'No User';  // Assuming debt has a user field
       const creditCard = debt.creditCard ? debt.creditCard.name : 'No Credit Card';
       const flag = debt.flag;
@@ -338,13 +342,9 @@ const Debts = () => {
       groups[user].creditCards[creditCard].flags[flag].debts.push(debt);
     });
 
-    console.log('groupDebts : ',groups)
-  
-    return groups;
+    setGroupDebt(groups);
   };
   
-
-  const groupedDebts = groupDebts();
 
   const sortedMonthKeys = Object.keys(sums).sort((a, b) => {
     const [yearA, monthA] = a.split('-').map(Number);
@@ -392,7 +392,7 @@ const Debts = () => {
           currentYear={currentYear}
           currentMonth={currentMonth}
           formatMonthYear={formatMonthYear}
-          groupedDebts={groupedDebts}
+          groupedDebts={groupDebt}
           toggleGroup={toggleGroup}
           expandedGroups={expandedGroups}
           handleEditClick={handleEditClick}
