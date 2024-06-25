@@ -104,6 +104,9 @@ const Debts = () => {
             newValues.paid = calculatePaidPerPeriod(newValues.amount, newValues.interest, newValues.allPeriod);
         }
       }
+      if (newValues.type === 'cash') {
+        newValues.flag = 'paid full';
+      }
       return newValues;
     });
   };
@@ -207,7 +210,8 @@ const Debts = () => {
   };
 
   const deleteDebt = async (debt) => {
-    const res = await fetch(`/api/debts/${debt.id}`, {
+    console.log('deleteDebt ',debt)
+    const res = await fetch(`/api/debts/${debt._id}`, {
       method: 'DELETE',
     });
     if (res.ok) {
@@ -323,7 +327,7 @@ const Debts = () => {
   
     details.forEach((debt) => {
       const user = debt.user ? debt.user : 'No User';  // Assuming debt has a user field
-      const creditCard = debt.creditCard ? debt.creditCard.name : 'No Credit Card';
+      const creditCard = debt.creditCard ? debt.creditCard.name : 'Cash';
       const flag = debt.flag;
   
       if (!groups[user]) {
@@ -354,7 +358,7 @@ const Debts = () => {
 
   return (
     <Card title="">
-      <div className="mb-4 flex justify-between items-center">
+      <div className=" flex justify-between items-center">
         <h1 className="text-2xl font-bold">Debts</h1>
         <Input
           label=""

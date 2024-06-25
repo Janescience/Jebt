@@ -9,7 +9,6 @@ const DebtForm = ({ formValues, handleInputChange, handleFormSubmit, editingDebt
       <Input label="Name" type="text" name="name" value={formValues.name} onChange={handleInputChange} required />
       <Input label="Type" type="select" name="type" value={formValues.type} onChange={handleInputChange} required options={[
         { value: 'credit card', label: 'Credit Card' },
-        { value: 'regular', label: 'Regular' },
         { value: 'cash', label: 'Cash' },
       ]} />
       {formValues.type === 'credit card' && (
