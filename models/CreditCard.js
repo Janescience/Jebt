@@ -12,6 +12,9 @@ const CreditCardSchema = new mongoose.Schema({
   finishDate: {
     type: Number,
   },
+  color: {
+    type: String,
+  },
 });
 
 export default mongoose.models.CreditCard || mongoose.model('CreditCard', CreditCardSchema);

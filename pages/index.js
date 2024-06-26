@@ -26,7 +26,7 @@ export default function Home() {
   },[debtDetails])
 
   useEffect(() => {
-    groupRegularByName(regulars)
+    groupRegularByName()
   },[regulars])
 
   const fetchDebtDetails = async (year, month) => {
@@ -70,31 +70,35 @@ export default function Home() {
   const filterPaidFinished = () => {
     const debts = []
     let sum = 0;
-    debtDetails.map((debt) => {
-      if(debt.currentPeriod == debt.allPeriod){
-        sum += debt.paid
-        debts.push(debt)
-      }
-    })
+    if(debtDetails && debtDetails.length > 0){
+      debtDetails.map((debt) => {
+        if(debt.currentPeriod == debt.allPeriod){
+          sum += debt.paid
+          debts.push(debt)
+        }
+      })
+    }
     setDebtFinish(debts)
     setSumDebtFinish(sum)
   }
 
-  const groupRegularByName = (regulars) => {
+  const groupRegularByName = () => {
     const groups = {};
     let sum = 0;
   
-    regulars.forEach((reg) => {
-      const name = reg.name ;
-  
-      if (!groups[name]) {
-        groups[name] = { sum: 0 };
-      }
+    if(regulars && regulars.length > 0){
+      regulars.forEach((reg) => {
+        const name = reg.name ;
+    
+        if (!groups[name]) {
+          groups[name] = { sum: 0 };
+        }
 
-      groups[name].sum += reg.amount;
-      sum += reg.amount
+        groups[name].sum += reg.amount;
+        sum += reg.amount
 
-    });
+      });
+    }
     setGroupName(groups)
     setSumGroupName(sum)
   }
@@ -107,12 +111,14 @@ export default function Home() {
   return (
     <div>
       <Card>
-        <h1 className="text-xl font-bold mb-3 ">Dashboard</h1>
-          <div className="grid grid-cols-2 gap-3 mb-3  bg-black  rounded-md ">
-            <div className="p-1 text-white">{formatMonth()} {year}</div>
+        <h1 className="text-2xl font-bold mb-1">Summary</h1>
+          <div className="grid grid-cols-2 gap-3 ">
+            <div className="p-2">{formatMonth()} {year}</div>
             <div className="flex text-sm justify-end p-2">
-              <div className="text-end text-rose-500 ">+ {(sumGroupCredit + sumGroupName).toFixed(2)} </div>
-              <div className="text-end text-lime-500 ">- {(sumDebtFinish).toFixed(2)} </div>
+              <div className=" ">
+                Debt <span className="underline decoration-2 font-bold">{(sumGroupCredit + sumGroupName).toFixed(2)}</span> / 
+                Reduce <span className="underline decoration-2 font-bold">{(sumDebtFinish).toFixed(2)}</span>  
+              </div>
             </div>
           </div>
           <div className="rounded-md shadow text-sm bg-gray-200 p-1 mb-3">

@@ -18,6 +18,10 @@ const CreditCards = () => {
     fetchCreditCards();
   }, []);
 
+  const editClick = (card) =>{
+    setEditingCard(card)
+  }
+
   const handleAdd = async (card) => {
     const resp = await fetch('/api/credit-cards', {
       method: 'POST',
@@ -65,12 +69,8 @@ const CreditCards = () => {
 
   return (
     <div className="grid grid-cols-1 gap-5">
-      <div className="">
         <CreditCardForm onSubmit={editingCard ? handleUpdate : handleAdd} initialData={editingCard} />
-      </div>
-      <div className="">
-        <CreditCardList creditCards={creditCards} onEdit={setEditingCard} onDelete={handleDelete} />
-      </div>
+        <CreditCardList creditCards={creditCards} onEdit={editClick} onDelete={handleDelete} />
     </div>
   );
 };

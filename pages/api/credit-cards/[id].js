@@ -1,5 +1,6 @@
 import dbConnect from '@/lib/mongodb';
 import CreditCard from '@/models/CreditCard';
+import Debt from '@/models/Debt';
 
 export default async function handler(req, res) {
   const {
@@ -37,11 +38,17 @@ export default async function handler(req, res) {
       break;
     case 'DELETE':
       try {
-        const deletedCreditCard = await CreditCard.deleteOne({ _id: id });
-        if (!deletedCreditCard) {
-          return res.status(404).json({ success: false });
+        const debts = await Debt.find({creditCard:id});
+        if(debts.length === 0){
+          const deletedCreditCard = await CreditCard.deleteOne({ _id: id });
+          if (!deletedCreditCard) {
+            return res.status(404).json({ success: false });
+          }
+          res.status(200).json({ success: true, data: {} });
+        }else{
+          res.status(400).json({ success: false , message : 'Can not delete credit card used'});
         }
-        res.status(200).json({ success: true, data: {} });
+        
       } catch (error) {
         res.status(400).json({ success: false });
       }
