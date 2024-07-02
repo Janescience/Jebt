@@ -1,4 +1,5 @@
 import Card from "@/components/Card";
+import UserAvatar from "@/components/UserAvatar";
 import { useEffect,useState } from "react";
 
 export default function Home() {
@@ -7,6 +8,7 @@ export default function Home() {
   const [debtFinish, setDebtFinish] = useState([]);
   const [groupCreditCard,setGroupCreditCard] = useState({})
   const [groupName,setGroupName] = useState({})
+  const [groupDebtFinish,setGroupDebtFinish] = useState({})
   const [sumDebtFinish,setSumDebtFinish] = useState(0)
 
   const [sumGroupName,setSumGroupName] = useState(0)
@@ -16,7 +18,7 @@ export default function Home() {
   const [year,setYear] = useState(new Date().getFullYear())
 
   useEffect(()=>{
-    fetchDebtDetails(year,month)
+    fetchDebtDetails(new Date().getFullYear(),new Date().getMonth()+1)
     fetchRegular() 
   },[])
 
@@ -24,6 +26,10 @@ export default function Home() {
     groupDebtsByCreditCard()
     filterPaidFinished()
   },[debtDetails])
+
+  useEffect(() => {
+    groupDebtFinishByUser()
+  },[debtFinish])
 
   useEffect(() => {
     groupRegularByName()
@@ -80,6 +86,8 @@ export default function Home() {
     }
     setDebtFinish(debts)
     setSumDebtFinish(sum)
+
+
   }
 
   const groupRegularByName = () => {
@@ -103,6 +111,28 @@ export default function Home() {
     setSumGroupName(sum)
   }
 
+  const groupDebtFinishByUser = () => {
+    const groups = {};
+  
+    debtFinish.forEach((debt) => {
+      const user = debt.user ? debt.user : 'No User';  // Assuming debt has a user field
+      const creditCard = debt.creditCard ? debt.creditCard.name : 'Cash';
+  
+      if (!groups[user]) {
+        groups[user] = { sum: 0, creditCards: {} };
+      }
+      if (!groups[user].creditCards[creditCard]) {
+        groups[user].creditCards[creditCard] = { sum: 0 , debts: []};
+      }
+  
+      groups[user].sum += debt.paid;
+      groups[user].creditCards[creditCard].sum += debt.paid;
+      groups[user].creditCards[creditCard].debts.push(debt);
+    });
+    
+    setGroupDebtFinish(groups)
+  }
+
   const formatMonth = () => {
     const date = new Date(year, month - 1);
     return date.toLocaleString('default', {month: 'long' });
@@ -112,10 +142,10 @@ export default function Home() {
     <div>
       <Card>
         <h1 className="text-2xl font-bold mb-1">Summary</h1>
-          <div className="grid grid-cols-2 gap-3 ">
+          <div className="grid md:grid-cols-2 grid-cols-1 ">
             <div className="p-2">{formatMonth()} {year}</div>
             <div className="flex text-sm justify-end p-2">
-              <div className=" ">
+              <div className="">
                 Debt <span className="underline decoration-2 font-bold">{(sumGroupCredit + sumGroupName).toFixed(2)}</span> / 
                 Reduce <span className="underline decoration-2 font-bold">{(sumDebtFinish).toFixed(2)}</span>  
               </div>
@@ -136,7 +166,47 @@ export default function Home() {
           </div>
           <div className="rounded-md shadow text-sm bg-gray-200 p-1 mb-3">
             <h2 className="bg-gray-800 text-white rounded-md p-1 mb-1">Credit card paid finished</h2>
-            {debtFinish.map((debt) => (
+            {Object.keys(groupDebtFinish).map((user) => (
+                <div key={user} className="mb-1 text-xs">
+                    <div className=" p-1 mb-1 font-bold border  flex justify-between " onClick={() => toggleGroup(user)}>
+                        <span>
+                        <UserAvatar  
+                            username={user} 
+                            avatar={'https://api.dicebear.com/7.x/avataaars/svg?seed='+user}
+                            className=""
+                        />
+                        {user}
+                        </span>
+                        <span>{groupDebtFinish[user].sum.toFixed(2)}</span>
+                    </div>
+                    <div className="">
+                        {Object.keys(groupDebtFinish[user].creditCards).map((creditCard) => (
+                            <div key={creditCard} className="mb-2">
+                              <div className="p-1 border mb-2 underline font-bold flex justify-between " onClick={() => toggleGroup(`${user}-${creditCard}`)}>
+                                  <span>{creditCard}</span>
+                                  <span>{groupDebtFinish[user].creditCards[creditCard].sum.toFixed(2)}</span>
+                              </div>
+                              <div className="ml-2 ">
+                                {groupDebtFinish[user].creditCards[creditCard].debts.map((debt) => (
+                                  
+                                  <div key={debt._id} className="text-xs grid p-1 grid-cols-4 grid-flow-row-dense gap-1 border border-gray-300">
+                                    <div className="col-span-2">{debt.name}</div> 
+                                    {/* <div className="col-span-2 hidden md:block">{debt.creditCard.name}</div>  */}
+                                    <div className="text-end">{debt.currentPeriod}/{debt.allPeriod}</div> 
+                                    {/* <div className="text-center">{debt.user}</div> */}
+                                    <div className="text-end">{debt.paid.toFixed(2)}</div>
+                                  </div>
+                              
+                                ))}
+                              </div>
+                                
+                            </div>
+                        ))}
+                    </div>
+                    
+                </div>
+            ))}
+            {/* {debtFinish.map((debt) => (
               <div key={debt._id} className="text-xs grid p-1 md:grid-cols-7 grid-cols-4 grid-flow-row-dense gap-1 border border-gray-300">
                 <div className="col-span-2">{debt.name}</div> 
                 <div className="col-span-2 hidden md:block">{debt.creditCard.name}</div> 
@@ -144,7 +214,7 @@ export default function Home() {
                 <div className="text-center">{debt.user}</div>
                 <div className="text-end">{debt.paid.toFixed(2)}</div>
               </div>
-            ))}
+            ))} */}
             <div className="p-1 flex justify-between font-bold ">
               <div>Total</div> 
               <div className="underline decoration-2">{sumDebtFinish.toFixed(2)}</div>

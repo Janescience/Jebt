@@ -12,6 +12,9 @@ export default async function handler(req, res) {
   switch (method) {
     case 'GET':
       try {
+        console.log('year : ',year)
+        console.log('month : ',month)
+
         const debts = await Debt.find({
           year: year,
           month: month-1
