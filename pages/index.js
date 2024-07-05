@@ -1,6 +1,8 @@
 import Card from "@/components/Card";
 import UserAvatar from "@/components/UserAvatar";
 import { useEffect,useState } from "react";
+import Loading from '@/components/Loading';
+
 
 export default function Home() {
   const [debtDetails, setDebtDetails] = useState([]);
@@ -13,9 +15,11 @@ export default function Home() {
 
   const [sumGroupName,setSumGroupName] = useState(0)
   const [sumGroupCredit,setSumGroupCredit] = useState(0)
-  const [loading, setLoading] = useState(true);
+  const [loading2, setLoading2] = useState(true);
   const [month,setMonth] = useState(new Date().getMonth()+1)
   const [year,setYear] = useState(new Date().getFullYear())
+  const [loading1,setLoading1] = useState(true)
+  const [loading3,setLoading3] = useState(true)
 
   useEffect(()=>{
     fetchDebtDetails(new Date().getFullYear(),new Date().getMonth()+1)
@@ -36,19 +40,19 @@ export default function Home() {
   },[regulars])
 
   const fetchDebtDetails = async (year, month) => {
-    setLoading(true);
+    setLoading1(true);
     const res = await fetch(`/api/debts/monthly/${year}/${month}`);
     const data = await res.json();
     setDebtDetails(data.data);
-    setLoading(false);
+    setLoading1(false);
   };
 
   const fetchRegular = async () => {
-    setLoading(true);
+    setLoading3(true);
     const res = await fetch(`/api/regular`);
     const data = await res.json();
     setRegulars(data.data);
-    setLoading(false);
+    setLoading3(false);
   };
 
   const groupDebtsByCreditCard = () => {
@@ -74,6 +78,8 @@ export default function Home() {
   };
 
   const filterPaidFinished = () => {
+    setLoading2(true);
+
     const debts = []
     let sum = 0;
     if(debtDetails && debtDetails.length > 0){
@@ -86,6 +92,7 @@ export default function Home() {
     }
     setDebtFinish(debts)
     setSumDebtFinish(sum)
+    setLoading2(false);
 
 
   }
@@ -152,6 +159,10 @@ export default function Home() {
             </div>
           </div>
           <div className="rounded-md shadow text-sm bg-gray-200 p-1 mb-3">
+          {loading2 ? (
+            <Loading />
+          ) : (
+              <div>
             <h2 className="bg-gray-800 text-white rounded-md p-1 mb-1">Credit card summary</h2>
             {Object.keys(groupCreditCard).map((key) => (
               <div key={key} className="p-1 flex justify-between text-xs border border-gray-300">
@@ -163,8 +174,14 @@ export default function Home() {
               <div>Total</div>
               <div className="underline decoration-2">{sumGroupCredit.toFixed(2)}</div>
             </div>
+            </div>
+          )}
           </div>
           <div className="rounded-md shadow text-sm bg-gray-200 p-1 mb-3">
+          {loading2 ? (
+            <Loading />
+          ) : (
+              <div>
             <h2 className="bg-gray-800 text-white rounded-md p-1 mb-1">Credit card paid finished</h2>
             {Object.keys(groupDebtFinish).map((user) => (
                 <div key={user} className="mb-1 text-xs">
@@ -219,19 +236,27 @@ export default function Home() {
               <div>Total</div> 
               <div className="underline decoration-2">{sumDebtFinish.toFixed(2)}</div>
             </div>
+            </div>
+          )}
           </div>
           <div className="rounded-md shadow text-sm bg-gray-200 p-1">
-            <h2 className="bg-gray-800 text-white rounded-md p-1 mb-1">Regular expense summary</h2>
-            {Object.keys(groupName).map((key) => (
-              <div key={key} className=" text-xs p-1 flex justify-between border border-gray-300">
-                <div>{key}</div> 
-                <div>{groupName[key].sum.toFixed(2)}</div>
+          {loading3 ? (
+            <Loading />
+          ) : (
+              <div>
+                  <h2 className="bg-gray-800 text-white rounded-md p-1 mb-1">Regular expense summary</h2>
+                  {Object.keys(groupName).map((key) => (
+                    <div key={key} className=" text-xs p-1 flex justify-between border border-gray-300">
+                      <div>{key}</div> 
+                      <div>{groupName[key].sum.toFixed(2)}</div>
+                    </div>
+                  ))}
+                  <div className="p-1 flex justify-between font-bold">
+                    <div>Total</div>
+                    <div className="underline decoration-2">{sumGroupName.toFixed(2)}</div>
+                  </div>
               </div>
-            ))}
-            <div className="p-1 flex justify-between font-bold">
-              <div>Total</div>
-              <div className="underline decoration-2">{sumGroupName.toFixed(2)}</div>
-            </div>
+          )}
           </div>
           
       </Card>
