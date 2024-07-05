@@ -1,5 +1,6 @@
 import dbConnect from '@/lib/mongodb';
 import Debt from '@/models/Debt';
+import CreditCard from '@/models/CreditCard';
 
 export default async function handler(req, res) {
   const {
@@ -11,7 +12,7 @@ export default async function handler(req, res) {
 
   switch (method) {
     case 'GET':
-      try {
+      // try {
         console.log('year : ',year)
         console.log('month : ',month)
 
@@ -21,9 +22,9 @@ export default async function handler(req, res) {
         }).populate('creditCard');
 
         res.status(200).json({ success: true, data: debts });
-      } catch (error) {
-        res.status(400).json({ success: false, error });
-      }
+      // } catch (error) {
+      //   res.status(400).json({ success: false, error });
+      // }
       break;
     case 'DELETE':
       try {
