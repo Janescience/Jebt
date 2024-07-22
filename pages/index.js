@@ -159,31 +159,32 @@ export default function Home() {
             </div>
           </div>
           <div className="rounded-md shadow text-sm bg-gray-200 p-1 mb-3">
-          {loading2 ? (
-            <Loading />
-          ) : (
-              <div>
-            <h2 className="bg-gray-800 text-white rounded-md p-1 mb-1">Credit card summary</h2>
-            {Object.keys(groupCreditCard).map((key) => (
-              <div key={key} className="p-1 flex justify-between text-xs border border-gray-300">
-                <div>{key}</div> 
-                <div>{groupCreditCard[key].sum.toFixed(2)}</div>
-              </div>
-            ))}
-            <div className="flex p-1 justify-between font-bold ">
-              <div>Total</div>
-              <div className="underline decoration-2">{sumGroupCredit.toFixed(2)}</div>
-            </div>
-            </div>
-          )}
+              <h2 className="bg-gray-800 text-white rounded-md p-1 mb-1">Credit card summary</h2>
+              {loading1 ? (
+                <Loading />
+              ) : (
+                <div>
+                  {Object.keys(groupCreditCard).map((key) => (
+                    <div key={key} className="p-1 flex justify-between text-xs border border-gray-300">
+                      <div>{key}</div> 
+                      <div>{groupCreditCard[key].sum.toFixed(2)}</div>
+                    </div>
+                  ))}
+                  <div className="flex p-1 justify-between font-bold ">
+                    <div>Total</div>
+                    <div className="underline decoration-2">{sumGroupCredit.toFixed(2)}</div>
+                  </div>
+                </div>
+              )}
           </div>
           <div className="rounded-md shadow text-sm bg-gray-200 p-1 mb-3">
-          {loading2 ? (
-            <Loading />
-          ) : (
-              <div>
+          
             <h2 className="bg-gray-800 text-white rounded-md p-1 mb-1">Credit card paid finished</h2>
-            {Object.keys(groupDebtFinish).map((user) => (
+            {loading1 ? (
+              <Loading />
+            ) : (
+            <div>
+              {Object.keys(groupDebtFinish).map((user) => (
                 <div key={user} className="mb-1 text-xs">
                     <div className=" p-1 mb-1 font-bold border  flex justify-between " onClick={() => toggleGroup(user)}>
                         <span>
@@ -240,27 +241,25 @@ export default function Home() {
           )}
           </div>
           <div className="rounded-md shadow text-sm bg-gray-200 p-1">
-          {loading3 ? (
-            <Loading />
-          ) : (
-              <div>
-                  <h2 className="bg-gray-800 text-white rounded-md p-1 mb-1">Regular expense summary</h2>
-                  {Object.keys(groupName).map((key) => (
-                    <div key={key} className=" text-xs p-1 flex justify-between border border-gray-300">
-                      <div>{key}</div> 
-                      <div>{groupName[key].sum.toFixed(2)}</div>
+            <h2 className="bg-gray-800 text-white rounded-md p-1 mb-1">Regular expense summary</h2>
+              {loading3 ? (
+                <Loading />
+              ) : (
+                <div>
+                    {Object.keys(groupName).map((key) => (
+                      <div key={key} className=" text-xs p-1 flex justify-between border border-gray-300">
+                        <div>{key}</div> 
+                        <div>{groupName[key].sum.toFixed(2)}</div>
+                      </div>
+                    ))}
+                    <div className="p-1 flex justify-between font-bold">
+                      <div>Total</div>
+                      <div className="underline decoration-2">{sumGroupName.toFixed(2)}</div>
                     </div>
-                  ))}
-                  <div className="p-1 flex justify-between font-bold">
-                    <div>Total</div>
-                    <div className="underline decoration-2">{sumGroupName.toFixed(2)}</div>
-                  </div>
-              </div>
-          )}
+                </div>
+              )}
           </div>
-          
       </Card>
-      
     </div>
   );
 }

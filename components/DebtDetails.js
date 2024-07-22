@@ -38,7 +38,10 @@ const DebtDetails = ({ sums, debtSorted,handleMonthClick, selectedMonth, current
                                             {Object.keys(groupedDebts[user].creditCards).map((creditCard) => (
                                                 <div key={creditCard} className="mb-2">
                                                 <div className="p-2 border mb-2 bg-white flex justify-between rounded shadow cursor-pointer" onClick={() => toggleGroup(`${user}-${creditCard}`)}>
-                                                    <span>{creditCard}</span>
+                                                    <span className="text-sm flex items-center">
+                                                        <p className={groupedDebts[user].creditCards[creditCard].color + ' rounded-full shadow-md h-2 w-2 mr-1'}></p>
+                                                        {creditCard}
+                                                    </span>
                                                     <span>{groupedDebts[user].creditCards[creditCard].sum.toFixed(2)}</span>
                                                 </div>
                                                     {expandedGroups[`${user}-${creditCard}`] && (

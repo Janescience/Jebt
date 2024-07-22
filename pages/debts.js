@@ -328,6 +328,8 @@ const Debts = () => {
     details.forEach((debt) => {
       const user = debt.user ? debt.user : 'No User';  // Assuming debt has a user field
       const creditCard = debt.creditCard ? debt.creditCard.name : 'Cash';
+      const color = debt.creditCard ? debt.creditCard.color : '';
+
       const flag = debt.flag;
   
       if (!groups[user]) {
@@ -342,6 +344,7 @@ const Debts = () => {
   
       groups[user].sum += debt.paid;
       groups[user].creditCards[creditCard].sum += debt.paid;
+      groups[user].creditCards[creditCard].color = color;
       groups[user].creditCards[creditCard].flags[flag].sum += debt.paid;
       groups[user].creditCards[creditCard].flags[flag].debts.push(debt);
     });
